@@ -1,5 +1,6 @@
 {
 	"name": "@automattic/babel-plugin-transform-wpcalypso-async",
 	"version": "1.0.1",
-	"private": true
+	"private": true,
+	"license": "GPL-2.0-or-later"
 }
