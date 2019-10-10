@@ -9,7 +9,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import { reject } from 'lodash';
 import classNames from 'classnames';
-import { localize } from 'i18n-calypso';
+import { localize, translate } from 'i18n-calypso';
 
 /**
  * Internal dependencies
@@ -81,7 +81,7 @@ const PopoverCart = createReactClass( {
 				<div className={ classes }>
 					<HeaderButton
 						icon="cart"
-						label="Cart"
+						label={ translate( 'Cart' ) }
 						ref={ this.toggleButton }
 						onClick={ this.onToggle }
 					/>
