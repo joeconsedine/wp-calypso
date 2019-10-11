@@ -15,9 +15,7 @@ import config from 'config';
 import emitter from 'lib/mixins/emitter';
 import { ANALYTICS_SUPER_PROPS_UPDATE } from 'state/action-types';
 import {
-	mayWeTrackCurrentUserGdpr,
 	doNotTrack,
-	isPiiUrl,
 	shouldReportOmitBlogId,
 	costToUSD,
 	urlParseAmpCompatible,
@@ -40,7 +38,6 @@ import {
 } from 'lib/analytics/ad-tracking';
 import { updateQueryParamsTracking } from 'lib/analytics/sem';
 import { statsdTimingUrl, statsdCountingUrl } from 'lib/analytics/statsd';
-import { isE2ETest } from 'lib/e2e';
 import { getGoogleAnalyticsDefaultConfig } from './ad-tracking';
 import { affiliateReferral as trackAffiliateReferral } from 'state/refer/actions';
 import { reduxDispatch } from 'lib/redux-bridge';
@@ -54,7 +51,6 @@ const mcDebug = debug( 'calypso:analytics:mc' );
 const gaDebug = debug( 'calypso:analytics:ga' );
 const referDebug = debug( 'calypso:analytics:refer' );
 const queueDebug = debug( 'calypso:analytics:queue' );
-const hotjarDebug = debug( 'calypso:analytics:hotjar' );
 const tracksDebug = debug( 'calypso:analytics:tracks' );
 const statsdDebug = debug( 'calypso:analytics:statsd' );
 
@@ -719,37 +715,6 @@ const analytics = {
 				referDebug( 'Recording affiliate referral.', { affiliateId, campaignId, subId, referrer } );
 				reduxDispatch( trackAffiliateReferral( { affiliateId, campaignId, subId, referrer } ) );
 			}
-		},
-	},
-
-	// HotJar tracking
-	hotjar: {
-		addHotJarScript: function() {
-			if (
-				! config( 'hotjar_enabled' ) ||
-				isE2ETest() ||
-				doNotTrack() ||
-				isPiiUrl() ||
-				! mayWeTrackCurrentUserGdpr()
-			) {
-				hotjarDebug( 'Not loading HotJar script' );
-				return;
-			}
-
-			( function( h, o, t, j, a, r ) {
-				hotjarDebug( 'Loading HotJar script' );
-				h.hj =
-					h.hj ||
-					function() {
-						( h.hj.q = h.hj.q || [] ).push( arguments );
-					};
-				h._hjSettings = { hjid: 227769, hjsv: 5 };
-				a = o.getElementsByTagName( 'head' )[ 0 ];
-				r = o.createElement( 'script' );
-				r.async = 1;
-				r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-				a.appendChild( r );
-			} )( window, document, '//static.hotjar.com/c/hotjar-', '.js?sv=' );
 		},
 	},
 
